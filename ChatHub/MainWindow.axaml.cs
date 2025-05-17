@@ -3,9 +3,11 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using Avalonia.Interactivity;
 
 namespace ChatHub
 {
@@ -14,14 +16,24 @@ namespace ChatHub
         public MainWindow()
         {
             InitializeComponent();
+            LoadName();
 #if DEBUG
             this.AttachDevTools();
+            
 #endif
             // 获取过滤后的 IPv4 地址并显示
             string allIPv4Addresses = GetAllIPv4Addresses();
             var localIPText = this.FindControl<TextBlock>("LocalIPText");
             localIPText.Text = $"内网 IPv4 地址:\n{allIPv4Addresses}";
+            
+            
+            
+            
         }
+
+
+
+
 
         private string GetAllIPv4Addresses()
         {
@@ -93,6 +105,54 @@ namespace ChatHub
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
+            
         }
+
+      
+        private void ClientButton_OnClick(object? sender, RoutedEventArgs e)
+        {
+            var clientStartWindow = new ClientStart();
+            clientStartWindow.Show();
+            this.Close();
+        }
+        
+        
+        private const string NamePath = "ChatHubName.txt";
+
+        private void LoadName()
+        {
+            if (File.Exists(NamePath))
+            {
+                try
+                {
+                    string nickname = File.ReadAllText(NamePath);
+                    if (this.FindControl<TextBox>("NameTextBox") is TextBox NameTextBox)
+                    {
+                        NameTextBox.Text = nickname;
+                    }
+                }
+                catch (IOException)
+                {
+                    // 处理文件读取错误
+                }
+            }
+        }
+        private void SaveNameButtom_Click(object? sender, RoutedEventArgs e)
+        {
+            if (this.FindControl<TextBox>("NameTextBox") is TextBox NameTextBox)
+            {
+                string name = NameTextBox.Text;
+                try
+                {
+                    File.WriteAllText(NamePath, name);
+                }
+                catch (IOException)
+                {
+                    // 处理文件写入错误
+                }
+            }
+        }
+        
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -18,6 +19,11 @@ public partial class JoinerStart : Window
         //string allIPv4Addresses = GetAllIPv4Addresses();
         //var localIPText = this.FindControl<TextBlock>("LocalIPText");
         //localIPText.Text = $"内网 IPv4 地址:\n{allIPv4Addresses}";
+        var nameTextBlock = this.FindControl<TextBlock>("NameTextBlock");
+        if (nameTextBlock != null)
+        {
+            nameTextBlock.Text = $"昵称: " + LoadName();
+        }
 
         
     }
@@ -100,4 +106,28 @@ public partial class JoinerStart : Window
         MainWindow.Show();
         this.Close();
     }
+    
+    
+    private string LoadName()
+    {
+        string NamePath = "ChatHubName.txt";
+        // 初始化返回值为空字符串
+        string name = string.Empty;
+        if (File.Exists(NamePath))
+        {
+            try
+            {
+                // 读取文件内容
+                name = File.ReadAllText(NamePath);
+            }
+            catch (IOException)
+            {
+                // 处理文件读取错误，保持返回值为空字符串
+            }
+        }
+        // 返回读取到的内容或空字符串
+        return name;
+    }
+    
+    
 }

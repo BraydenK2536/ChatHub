@@ -13,6 +13,7 @@
         <!-- 原有的 StackPanel 布局，水平和垂直居中 -->
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock x:Name="ConnectPinText" Margin="0,10,0,0" HorizontalAlignment="Center"/>
+            <TextBlock x:Name="NameTextBlock"/>
             <TextBlock Text="正在等待其他用户加入..."></TextBlock>
             <TextBlock></TextBlock>
             <!-- 占位空 StackPanel，可根据需求调整或移除 -->

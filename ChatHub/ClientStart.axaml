@@ -3,18 +3,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="ChatHub.JoinerStart"
-        Title="Join">
+        x:Class="ChatHub.ClientStart"
+        Title="ClientMod">
     <Grid>
+        <!-- 左上角按钮 -->
         <Button Content="返回" Name="BackButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" Click="BackButton_OnClick"/>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock x:Name="NameTextBlock"/>
-            <TextBlock Text="请输入连接码" ></TextBlock>
-            <TextBlock></TextBlock>
-            <TextBox Width="80" Height="25" ></TextBox>
-            <Button Content="连接" Height="20"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Text="呵呵，这啥也没写呢" VerticalAlignment="Center" HorizontalAlignment="Center" /> 
         
-        </StackPanel>
     </Grid>
-    
 </Window>

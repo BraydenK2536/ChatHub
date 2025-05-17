@@ -3,6 +3,7 @@
   <component name="AvaloniaProject">
     <option name="projectPerEditor">
       <map>
+        <entry key="ChatHub/App.axaml" value="ChatHub/ChatHub.csproj" />
         <entry key="ChatHub/HolderStart.axaml" value="ChatHub/ChatHub.csproj" />
         <entry key="ChatHub/HosterStart.axaml" value="ChatHub/ChatHub.csproj" />
         <entry key="ChatHub/JoinerStart.axaml" value="ChatHub/ChatHub.csproj" />
