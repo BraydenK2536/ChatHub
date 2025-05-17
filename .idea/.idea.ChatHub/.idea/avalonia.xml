@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="ChatHub/HolderStart.axaml" value="ChatHub/ChatHub.csproj" />
+        <entry key="ChatHub/HosterStart.axaml" value="ChatHub/ChatHub.csproj" />
+        <entry key="ChatHub/JoinerStart.axaml" value="ChatHub/ChatHub.csproj" />
+        <entry key="ChatHub/MainWindow.axaml" value="ChatHub/ChatHub.csproj" />
+      </map>
+    </option>
+  </component>
+</project>
