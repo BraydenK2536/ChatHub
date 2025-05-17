@@ -1,0 +1,23 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="ChatHub.MainWindow"
+        Title="ChatHub v 0.0.1 beta">
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button Content="主持" Width="220" Height="60" Margin="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="HostButton_Click"/>
+            <Button Content="加入" Width="220" Height="60" Margin="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="JoinButton_Click"/> 
+        </StackPanel>
+        <!-- 添加提示文字 -->
+        <TextBlock Text="请输入昵称，若留空则使用ip地址。" Margin="0,20,0,10" HorizontalAlignment="Center"/>
+        <!-- 添加输入框 -->
+        <TextBox Width="200" Height="40" Margin="0,0,0,20" HorizontalAlignment="Center"/>
+        <!-- 添加确认按钮 -->
+        <Button Content="确认并保存昵称" Width="150" Height="50" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <!-- 显示内网 IP 的 TextBlock -->
+        <TextBlock x:Name="LocalIPText"  Margin="0,20,0,0" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+
+    </StackPanel>
+</Window>
