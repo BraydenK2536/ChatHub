@@ -8,12 +8,21 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using System.Text;
+using System.Threading;
 
 namespace ChatHub
 {
     public partial class HosterStart : Window
     {
         private string NamePath = "ChatHubName.txt";
+        
+        // 声明 _tcpListener 字段
+        private TcpListener _tcpListener;
+        // 声明 _cancellationTokenSource 字段
+        private CancellationTokenSource _cancellationTokenSource;
+
+
 
         public HosterStart()
         {
@@ -32,7 +41,7 @@ namespace ChatHub
             var connectPinText = this.FindControl<TextBlock>("ConnectPinText");
             if (connectPinText != null)
             {
-                connectPinText.Text = $"您的连接码: {connectPin}";
+                connectPinText.Text = $"您的端口: {connectPin}";
             }
 
             // 显示加入用户信息的 TextBlock
@@ -48,6 +57,8 @@ namespace ChatHub
             {
                 nameTextBlock.Text = $"昵称: " + LoadName();
             }
+            
+            StartListening(connectPin);
         }
 
         private string GetAllIPv4Addresses()
@@ -124,8 +135,97 @@ namespace ChatHub
                     // 处理文件读取错误，保持返回值为空字符串
                 }
             }
+
             // 返回读取到的内容或空字符串
             return name;
         }
-    }
+        private void StartListening(int port)
+       {
+           try
+           {
+               // 选择一个端口，这里使用 8888 作为示例
+               _tcpListener = new TcpListener(IPAddress.Any, port);
+               _tcpListener.Start();
+
+               _cancellationTokenSource = new CancellationTokenSource();
+               var cancellationToken = _cancellationTokenSource.Token;
+
+               // 在新线程中开始接受连接
+               ThreadPool.QueueUserWorkItem(async _ =>
+               {
+                   try
+                   {
+                       while (!cancellationToken.IsCancellationRequested)
+                       {
+                           // 等待客户端连接
+                           TcpClient client = await _tcpListener.AcceptTcpClientAsync(cancellationToken);
+                           // 处理客户端连接
+                           HandleClient(client);
+                       }
+                   }
+                   catch (OperationCanceledException)
+                   {
+                       // 操作被取消
+                   }
+                   catch (Exception ex)
+                   {
+                       // 处理异常
+                       Console.WriteLine($"监听错误: {ex.Message}");
+                   }
+               });
+           }
+           catch (Exception ex)
+           {
+               // 处理异常
+               Console.WriteLine($"启动监听失败: {ex.Message}");
+           }
+       }
+
+       private async void HandleClient(TcpClient client)
+       {
+           try
+           {
+               using (NetworkStream stream = client.GetStream())
+               {
+                   byte[] buffer = new byte[1024];
+                   int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                   string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+
+                   // 处理接收到的消息
+                   Console.WriteLine($"收到连接: {message}");
+
+                   // 发送响应
+                   string response = "连接成功";
+                   byte[] responseBytes = Encoding.UTF8.GetBytes(response);
+                   await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
+               }
+           }
+           catch (Exception ex)
+           {
+               // 处理异常
+               Console.WriteLine($"处理客户端连接错误: {ex.Message}");
+           }
+           finally
+           {
+               client.Close();
+           }
+       }
+
+       protected override void OnClosed(EventArgs e)
+       {
+           base.OnClosed(e);
+           // 停止监听
+           if (_tcpListener != null)
+           {
+               _tcpListener.Stop();
+           }
+           if (_cancellationTokenSource != null)
+           {
+               _cancellationTokenSource.Cancel();
+           }
+       }
+
+   }
+
+
 }

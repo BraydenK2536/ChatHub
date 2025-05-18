@@ -10,7 +10,6 @@ public partial class ClientStart : Window
     public ClientStart()
     {
         InitializeComponent();
-        
     }
 
     private void BackButton_OnClick(object? sender, RoutedEventArgs e)

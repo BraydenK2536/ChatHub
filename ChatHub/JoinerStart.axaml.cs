@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -75,24 +78,6 @@ public partial class JoinerStart : Window
     }
 
 
-    // 按钮点击事件处理程序
-    private void HostButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        // 创建 HolderStart 窗口实例
-        var holderStartWindow = new HosterStart();
-        // 显示 HolderStart 窗口
-        holderStartWindow.Show();
-        // 关闭当前窗口
-        this.Close();
-    }
-
-    private void JoinButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        // 创建 JoinerStart 窗口实例
-        var joinerStartWindow = new JoinerStart();
-        joinerStartWindow.Show();
-        this.Close();
-    }
 
 
     private void InitializeComponent()
@@ -128,6 +113,75 @@ public partial class JoinerStart : Window
         // 返回读取到的内容或空字符串
         return name;
     }
+
+
     
     
+    private async void ConnectButton_Click(object sender, RoutedEventArgs e)
+        {
+            var portTextBox = this.FindControl<TextBox>("PortTextBox");
+            if (portTextBox != null && int.TryParse(portTextBox.Text, out int port))
+            {
+                var localIp = GetLocalIPv4();
+                if (localIp != null)
+                {
+                    string baseIp = localIp.Substring(0, localIp.LastIndexOf('.') + 1);
+                    List<Task> tasks = new List<Task>();
+
+                    for (int i = 1; i <= 254; i++)
+                    {
+                        string ip = baseIp + i;
+                        tasks.Add(CheckPortAsync(ip, port));
+                    }
+
+                    await Task.WhenAll(tasks);
+                }
+            }
+        }
+
+    private async Task CheckPortAsync(string ip, int port)
+    {
+        try
+        {
+            using (TcpClient client = new TcpClient())
+            {
+                
+                await client.ConnectAsync(IPAddress.Parse(ip), port);
+                bool success = client.Connected;
+                if (success)
+                {
+                    
+                    // 连接成功，发送连接请求
+                    using (NetworkStream stream = client.GetStream())
+                    {
+                        string message = "连接请求";
+                        byte[] data = Encoding.UTF8.GetBytes(message);
+                        await stream.WriteAsync(data, 0, data.Length);
+
+                        // 接收响应
+                        byte[] buffer = new byte[1024];
+                        int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                        string response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                        Console.WriteLine($"从 {ip} 收到响应: {response}");
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // 处理异常
+        }
+    }
+
+        private string GetLocalIPv4()
+        {
+            string localIp = null;
+            using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+            {
+                socket.Connect("8.8.8.8", 65530);
+                IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
+                localIp = endPoint.Address.ToString();
+            }
+            return localIp;
+        }
 }
