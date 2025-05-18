@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "E:\\ChatHub\\frontend\\ChatHub.csproj": {}
+    "E:\\AvaloniaTEST\\ChatHub\\frontend\\ChatHub.csproj": {}
   },
   "projects": {
-    "E:\\ChatHub\\frontend\\ChatHub.csproj": {
+    "E:\\AvaloniaTEST\\ChatHub\\frontend\\ChatHub.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\ChatHub\\frontend\\ChatHub.csproj",
+        "projectUniqueName": "E:\\AvaloniaTEST\\ChatHub\\frontend\\ChatHub.csproj",
         "projectName": "ChatHub",
-        "projectPath": "E:\\ChatHub\\frontend\\ChatHub.csproj",
-        "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-        "outputPath": "E:\\ChatHub\\frontend\\obj\\",
+        "projectPath": "E:\\AvaloniaTEST\\ChatHub\\frontend\\ChatHub.csproj",
+        "packagesPath": "C:\\Users\\Kevin\\.nuget\\packages\\",
+        "outputPath": "E:\\AvaloniaTEST\\ChatHub\\frontend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "D:\\vs\\Share\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Kevin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -44,7 +44,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -87,7 +87,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
