@@ -18,10 +18,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
         this.chatWebSocketHandler = chatWebSocketHandler;
     }
 
-    /**
-     * 注册 WebSocket 处理器。
-     * @param registry WebSocket 处理器注册表。
-     */
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         // 将 "/chat" 路径映射到我们的 ChatWebSocketHandler
