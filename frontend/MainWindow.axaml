@@ -32,7 +32,7 @@
                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  Click="SaveNameButtom_Click"/>
             <!-- 显示内网 IP 的 TextBlock -->
             <TextBlock x:Name="LocalIPText" Margin="0,20,0,0" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
-            <TextBox Width="200" Height="40" Margin="0,0,0,20" Name="ssBox" HorizontalAlignment="Center" />
+            
         </StackPanel>
     </Grid>
 </Window>

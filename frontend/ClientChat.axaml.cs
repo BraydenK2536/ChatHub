@@ -132,15 +132,5 @@ public partial class ClientChat : Window
         }
     }
     
-    private void MessageInput_TextInput(object sender, TextInputEventArgs e)
-    {
-        if (sender is TextBox textBox)
-        {
-            // 手动处理输入内容，避免输入法冲突
-            int caretIndex = textBox.CaretIndex;
-            textBox.Text = textBox.Text.Insert(caretIndex, e.Text);
-            textBox.CaretIndex = caretIndex + e.Text.Length;
-            e.Handled = true;
-        }
-    }
+    
 }

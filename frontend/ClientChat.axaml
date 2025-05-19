@@ -20,10 +20,10 @@
                  Width="600" 
                  Height="40" 
                  Margin="10,0,0,10"
-                 KeyDown="MessageInput_KeyDown"
-                 TextInput="MessageInput_TextInput"/>
-        <!-- ...已有代码... -->
-        <!-- 发送按钮 -->
+                 KeyDown="MessageInput_KeyDown"></TextBox>
+        
+                 
+        
         <Button Content="发送" HorizontalAlignment="Right" VerticalAlignment="Bottom" 
                 Width="100" Height="40" Margin="0,0,10,10" Click="SendMessage_Click"/>
     </Grid>
