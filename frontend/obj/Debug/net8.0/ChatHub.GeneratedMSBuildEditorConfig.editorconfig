@@ -24,6 +24,9 @@ build_property.EnableCodeStyleSeverity =
 [E:/AvaloniaTEST/ChatHub/frontend/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[E:/AvaloniaTEST/ChatHub/frontend/ClientChat.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [E:/AvaloniaTEST/ChatHub/frontend/ClientStart.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 

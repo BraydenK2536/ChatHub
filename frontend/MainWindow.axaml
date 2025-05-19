@@ -6,21 +6,22 @@
         x:Class="ChatHub.MainWindow"
         Title="ChatHub v 0.0.1 beta">
     <Grid>
-        <Button Click="ClientButton_OnClick" HorizontalAlignment="Right" VerticalAlignment="Top">
-            <TextBlock>
-                进入纯客户端模式
-                <LineBreak/>
-                普通用户勿点
-            </TextBlock>
-        </Button>
+        
         
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+            
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 
                 <Button Content="主持" Width="220" Height="60" Margin="30" HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center" Click="HostButton_Click" />
                 <Button Content="加入" Width="220" Height="60" Margin="30" HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center" Click="JoinButton_Click" />
+                <Button  Width="220" Height="60" Margin="30" Click="ClientButton_OnClick" HorizontalContentAlignment="Center"
+                         VerticalContentAlignment="Center">
+                    <TextBlock>
+                        纯客户端
+                    </TextBlock>
+                </Button>
             </StackPanel>
             <!-- 添加提示文字 -->
             <TextBlock Text="请输入昵称，若留空则使用ip地址。" Margin="0,20,0,10" HorizontalAlignment="Center" />
@@ -31,7 +32,7 @@
                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  Click="SaveNameButtom_Click"/>
             <!-- 显示内网 IP 的 TextBlock -->
             <TextBlock x:Name="LocalIPText" Margin="0,20,0,0" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
-
+            <TextBox Width="200" Height="40" Margin="0,0,0,20" Name="ssBox" HorizontalAlignment="Center" />
         </StackPanel>
     </Grid>
 </Window>

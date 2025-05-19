@@ -8,7 +8,10 @@
     <Grid>
         <!-- 左上角按钮 -->
         <Button Content="返回" Name="BackButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" Click="BackButton_OnClick"/>
-        <TextBlock Text="呵呵，这啥也没写呢" VerticalAlignment="Center" HorizontalAlignment="Center" /> 
-        
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <TextBlock x:Name="NameTextBlock" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="ConnectionStatusTextBlock" VerticalAlignment="Center" HorizontalAlignment="Center" /> 
+        <Button Content="加入聊天" x:Name="StartChatButton" Click="StartChatButton_OnClick"/>
+        </StackPanel>
     </Grid>
 </Window>
