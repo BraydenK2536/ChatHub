@@ -1,0 +1,38 @@
+/* 重置所有元素样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+}
+
+/* 清除body默认布局 */
+body {
+  display: block !important;
+  background: #fff;
+}
+
+/* 移除app容器布局 */
+#app {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  display: block !important;
+  grid-template-columns: none !important;
+}
+
+/* 清除链接样式 */
+a {
+  text-decoration: none !important;
+  color: inherit !important;
+  background-color: transparent !important;
+  padding: 0 !important;
+}
+
+/* 禁用所有媒体查询 */
+@media (min-width: 1024px) {
+  body, #app {
+    display: block !important;
+    place-items: initial !important;
+  }
+}

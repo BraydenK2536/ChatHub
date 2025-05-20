@@ -24,7 +24,7 @@ namespace ChatHub
             // 获取过滤后的 IPv4 地址并显示
             string allIPv4Addresses = GetAllIPv4Addresses();
             var localIPText = this.FindControl<TextBlock>("LocalIPText");
-            localIPText.Text = $"内网 IPv4 地址:\n{allIPv4Addresses}";
+            //localIPText.Text = $"内网 IPv4 地址:\n{allIPv4Addresses}";
             
             
             
