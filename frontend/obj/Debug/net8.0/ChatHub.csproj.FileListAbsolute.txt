@@ -15,7 +15,6 @@ E:\ChatHub\frontend\bin\Debug\net8.0\Avalonia.OpenGL.dll
 E:\ChatHub\frontend\bin\Debug\net8.0\Avalonia.Vulkan.dll
 E:\ChatHub\frontend\bin\Debug\net8.0\Avalonia.dll
 E:\ChatHub\frontend\bin\Debug\net8.0\Avalonia.Controls.ColorPicker.dll
-E:\ChatHub\frontend\bin\Debug\net8.0\Avalonia.Controls.DataGrid.dll
 E:\ChatHub\frontend\bin\Debug\net8.0\Avalonia.Desktop.dll
 E:\ChatHub\frontend\bin\Debug\net8.0\Avalonia.Diagnostics.dll
 E:\ChatHub\frontend\bin\Debug\net8.0\Avalonia.Fonts.Inter.dll
@@ -60,9 +59,6 @@ E:\ChatHub\frontend\obj\Debug\net8.0\ChatHub.AssemblyInfoInputs.cache
 E:\ChatHub\frontend\obj\Debug\net8.0\ChatHub.AssemblyInfo.cs
 E:\ChatHub\frontend\obj\Debug\net8.0\ChatHub.csproj.CoreCompileInputs.cache
 E:\ChatHub\frontend\obj\Debug\net8.0\ChatHub.sourcelink.json
-E:\ChatHub\frontend\obj\Debug\net8.0\Avalonia\ChatHub.dll
-E:\ChatHub\frontend\obj\Debug\net8.0\Avalonia\ChatHub.pdb
-E:\ChatHub\frontend\obj\Debug\net8.0\refint\Avalonia\ChatHub.dll
 E:\ChatHub\frontend\obj\Debug\net8.0\ChatHub.csproj.Up2Date
 E:\ChatHub\frontend\obj\Debug\net8.0\ChatHub.genruntimeconfig.cache
 E:\ChatHub\frontend\obj\Debug\net8.0\ref\ChatHub.dll
@@ -134,3 +130,7 @@ E:\AvaloniaTEST\ChatHub\frontend\bin\Debug\net8.0\Avalonia.Win32.Automation.dll
 E:\AvaloniaTEST\ChatHub\frontend\obj\Debug\net8.0\ChatHub.dll
 E:\AvaloniaTEST\ChatHub\frontend\obj\Debug\net8.0\refint\ChatHub.dll
 E:\AvaloniaTEST\ChatHub\frontend\obj\Debug\net8.0\ChatHub.pdb
+E:\ChatHub\frontend\bin\Debug\net8.0\Avalonia.Win32.Automation.dll
+E:\ChatHub\frontend\obj\Debug\net8.0\ChatHub.dll
+E:\ChatHub\frontend\obj\Debug\net8.0\refint\ChatHub.dll
+E:\ChatHub\frontend\obj\Debug\net8.0\ChatHub.pdb

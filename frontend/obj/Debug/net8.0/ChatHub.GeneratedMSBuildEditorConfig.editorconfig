@@ -15,26 +15,26 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = ChatHub
-build_property.ProjectDir = E:\AvaloniaTEST\ChatHub\frontend\
+build_property.ProjectDir = E:\ChatHub\frontend\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[E:/AvaloniaTEST/ChatHub/frontend/App.axaml]
+[E:/ChatHub/frontend/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[E:/AvaloniaTEST/ChatHub/frontend/ClientChat.axaml]
+[E:/ChatHub/frontend/ClientChat.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[E:/AvaloniaTEST/ChatHub/frontend/ClientStart.axaml]
+[E:/ChatHub/frontend/ClientStart.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[E:/AvaloniaTEST/ChatHub/frontend/HosterStart.axaml]
+[E:/ChatHub/frontend/HosterStart.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[E:/AvaloniaTEST/ChatHub/frontend/JoinerStart.axaml]
+[E:/ChatHub/frontend/JoinerStart.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[E:/AvaloniaTEST/ChatHub/frontend/MainWindow.axaml]
+[E:/ChatHub/frontend/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

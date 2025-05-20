@@ -1,6 +1,7 @@
-package com.ChatHub.chathub_backend;
+package com.ChatHub.chathub_backend.websocket;
 
-import com.ChatHub.chathub_backend.websocket.ChatWebSocketHandler;
+import com.ChatHub.chathub_backend.message.BaseMessage;
+import com.ChatHub.chathub_backend.message.SystemMessage;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public class ServerBroadcast {
                             System.out.println("输入次数");
                             int times = scanner.nextInt();
                             for (int i = 0; i < times; i++) {
-                                chatWebSocketHandler.broadcastMessage(null,message);
+                                chatWebSocketHandler.broadcastMessage(null,new SystemMessage(message,"SYSTEM"));
                             }
                         }
 
@@ -49,10 +50,10 @@ public class ServerBroadcast {
                             break;
                         }
 
-                        String messageToBroadcast = "[服务器消息]: " + input;
+                        String messageToBroadcast = input;
 
                         if (chatWebSocketHandler != null) {
-                            chatWebSocketHandler.broadcastMessage(null, messageToBroadcast);
+                            chatWebSocketHandler.broadcastMessage(null, new SystemMessage(messageToBroadcast,"SYSTEM"));
                             System.out.println("消息已广播: \"" + input + "\"");
                         }
                     }

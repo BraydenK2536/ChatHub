@@ -1,6 +1,8 @@
 package com.ChatHub.chathub_backend.websocket;
 
+import com.ChatHub.chathub_backend.message.BaseMessage;
 import com.ChatHub.chathub_backend.message.UserMessage;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -19,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static com.ChatHub.chathub_backend.message.UserMessage.USER_MESSAGE;
+
 @Component// 将这个 Handler 注册为一个 Spring Bean
 public class ChatWebSocketHandler extends TextWebSocketHandler {
 
@@ -26,29 +30,24 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final String USER_MESSAGE = "USER MESSAGE";
+    private String username;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        //链接建立后，把当前用户加入sessions并广播欢迎消息
+        //链接建立后，把当前用户加入sessions
         sessions.add(session);
-        broadcastMessage(session, "欢迎来到聊天室，" + session.getId());
-        broadcastMessage(null, session.getId() + "加入了聊天室");
     }
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
         //处理用户发来的json并使用objectMapper.readValue反序列化
         String jsonPayload = textMessage.getPayload();
-//        UserMessage message = objectMapper.readValue(jsonPayload, UserMessage.class);
-//
-//        String messageType = message.getType();
-        long timestamp = System.currentTimeMillis();
-        System.out.println("[" + timestamp + "]收到" + session.getId() + "的发送: " + jsonPayload);
-        broadcastMessage(session, jsonPayload);
-//        if(messageType.equalsIgnoreCase(USER_MESSAGE)) {
-//            broadcastMessage(session, jsonPayload);
-//        }
+        BaseMessage message = objectMapper.readValue(jsonPayload, BaseMessage.class);
+        System.out.println("[" + System.currentTimeMillis() + "]收到" + session.getId() + "的发送: " + jsonPayload);
+
+        if(message.getType().equals(USER_MESSAGE)) {
+            broadcastMessage(null, message);
+        }
     }
 
     @Override
@@ -64,18 +63,14 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         System.out.println("WebSocket链接断开: " + session.getId() + "关闭状态:" + status.getCode());
-        broadcastMessage(session, session.getId() + "离开了聊天室");
+        broadcastMessage(session, new BaseMessage());
         sessions.remove(session);
     }
 
-    public void broadcastMessage(WebSocketSession blackListSession, String message) {
-        //获取当前时间
-        long timestampMillis = System.currentTimeMillis();
-        Instant instant = Instant.ofEpochMilli(timestampMillis);
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String time = "[" +localDateTime.format(formatter) + "]";
-        TextMessage textMessage = new TextMessage(time + message);
+    public void broadcastMessage(WebSocketSession blackListSession, BaseMessage baseMessage) throws JsonProcessingException {
+        baseMessage.setMessage("我是大傻逼");
+        String jsonMessage =  objectMapper.writeValueAsString(baseMessage);
+        TextMessage textMessage = new TextMessage(jsonMessage);
         //遍历sessions发送消息
         for (WebSocketSession wss : sessions) {
             //向打开的非黑名单sessions广播消息

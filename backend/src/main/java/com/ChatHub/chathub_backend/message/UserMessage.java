@@ -1,35 +1,24 @@
 package com.ChatHub.chathub_backend.message;
 
 public class UserMessage extends BaseMessage {
-
-    private String username;
-    private String message;
+    public static final String USER_MESSAGE = "USER_MESSAGE";
+    private String name;
 
     public UserMessage() {
-        super();
+        super(USER_MESSAGE);
     }
 
-    public String getUsername() {
-        return username;
+    public UserMessage(String message, String name) {
+        this();
+        this.setMessage(message);
+        this.name = name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getName() {
+        return name;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    @Override
-    public String toString() {
-        return "UserMessage{" +
-                "username='" + username + '\'' +
-                ", message='" + message + '\'' +
-                '}';
+    public void setName(String name) {
+        this.name = name;
     }
 }
