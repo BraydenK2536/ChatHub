@@ -68,7 +68,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     public void broadcastMessage(WebSocketSession blackListSession, BaseMessage baseMessage) throws JsonProcessingException {
-        baseMessage.setMessage("我是大傻逼");
         String jsonMessage =  objectMapper.writeValueAsString(baseMessage);
         TextMessage textMessage = new TextMessage(jsonMessage);
         //遍历sessions发送消息
