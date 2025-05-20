@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 
 // 定义响应式变量
 const socket = ref(null);
@@ -10,6 +10,7 @@ const serverUrl = ref('ws://103.36.220.55:3003/chat'); // 默认地址
 const errorMessage = ref('');
 const username = ref(''); // 新增用户名变量
 let connectionInterval = null;
+const messagesRef = ref(null);
 
 // 格式化时间函数
 const formatTime = () => {
@@ -19,6 +20,15 @@ const formatTime = () => {
   const hours = String(now.getHours()).padStart(2, '0');
   const minutes = String(now.getMinutes()).padStart(2, '0');
   return `[${month}-${day} ${hours}:${minutes}]`;
+};
+
+// 滚动到聊天栏底部的函数
+const scrollToBottom = () => {
+  nextTick(() => {
+    if (messagesRef.value) {
+      messagesRef.value.scrollTop = messagesRef.value.scrollHeight;
+    }
+  });
 };
 
 // 连接 WebSocket 服务器的函数
@@ -48,6 +58,7 @@ const connectWebSocket = () => {
           time: msgData.time || formatTime(),
           name: msgData.name
         });
+        scrollToBottom(); // 收到消息后滚动到聊天栏底部
       } catch (parseError) {
         console.error('解析接收到的消息失败:', parseError);
         messages.value.push({ 
@@ -56,6 +67,7 @@ const connectWebSocket = () => {
           time: formatTime(),
           name: '未知用户'
         });
+        scrollToBottom(); // 收到消息后滚动到聊天栏底部
       }
     };
 
@@ -95,6 +107,7 @@ const sendMessage = () => {
     });
     socket.value.send(messageJson);
     messageInput.value = '';
+    scrollToBottom(); // 发送消息后滚动到聊天栏底部
   }
 };
 
@@ -157,7 +170,7 @@ const refreshConnection = () => {
       <!-- 显示错误消息 -->
       <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
       <!-- 显示消息历史 -->
-      <div class="messages">
+      <div class="messages" ref="messagesRef">
         <div v-for="(msg, index) in messages" :key="index" :class="['message', { 'self-message': msg.isSelf }]">
           <div class="message-time">{{ msg.time }}</div>
           <div class="message-content">{{ msg.name }}: {{ msg.content }}</div>
