@@ -40,8 +40,23 @@ const connectWebSocket = () => {
     };
 
     socket.value.onmessage = (event) => {
-      // 接收到的消息添加 isSelf 属性为 false，并记录时间
-      messages.value.push({ content: event.data, isSelf: false, time: formatTime() });
+      try {
+        const msgData = JSON.parse(event.data);
+        messages.value.push({ 
+          content: msgData.message, 
+          isSelf: false, 
+          time: msgData.time || formatTime(),
+          name: msgData.name
+        });
+      } catch (parseError) {
+        console.error('解析接收到的消息失败:', parseError);
+        messages.value.push({ 
+          content: event.data, 
+          isSelf: false, 
+          time: formatTime(),
+          name: '未知用户'
+        });
+      }
     };
 
     socket.value.onerror = (error) => {
@@ -65,13 +80,20 @@ const connectWebSocket = () => {
 // 发送消息的函数
 const sendMessage = () => {
   if (messageInput.value.trim() && socket.value?.readyState === WebSocket.OPEN) {
-    let messageToSend = messageInput.value;
-    if (username.value.trim()) {
-      messageToSend = `${username.value}: ${messageInput.value}`;
-    }
+    const messageObj = {
+      type: 'USER_MESSAGE',
+      message: messageInput.value,
+      name: username.value.trim() || '匿名用户'
+    };
+    const messageJson = JSON.stringify(messageObj);
     // 发送消息时，将消息添加到消息列表，并标记为自己发送的，记录时间
-    messages.value.push({ content: messageToSend, isSelf: true, time: formatTime() });
-    socket.value.send(messageToSend);
+    messages.value.push({ 
+      content: messageObj.message, 
+      isSelf: true, 
+      time: formatTime(),
+      name: messageObj.name
+    });
+    socket.value.send(messageJson);
     messageInput.value = '';
   }
 };
@@ -90,6 +112,17 @@ onBeforeUnmount(() => {
     socket.value.close();
   }
 });
+
+// 新增刷新连接函数
+const refreshConnection = () => {
+  if (connectionInterval) {
+    clearInterval(connectionInterval);
+  }
+  if (socket.value) {
+    socket.value.close();
+  }
+  connectionInterval = setInterval(connectWebSocket, 1000);
+};
 </script>
 
 <template>
@@ -116,15 +149,18 @@ onBeforeUnmount(() => {
           />
         </div>
       </div>
+      <!-- 新增一个容器让按钮和连接状态平行 -->
+      <div class="connect-status-container">
+        <button @click="refreshConnection">连接服务器</button>
+        <div class="status">连接状态: {{ connectionStatus }}</div>
+      </div>
       <!-- 显示错误消息 -->
       <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
-      <!-- 显示连接状态 -->
-      <div class="status">连接状态: {{ connectionStatus }}</div>
       <!-- 显示消息历史 -->
       <div class="messages">
         <div v-for="(msg, index) in messages" :key="index" :class="['message', { 'self-message': msg.isSelf }]">
           <div class="message-time">{{ msg.time }}</div>
-          <div class="message-content">{{ msg.content }}</div>
+          <div class="message-content">{{ msg.name }}: {{ msg.content }}</div>
         </div>
       </div>
       <!-- 输入消息的输入框和发送按钮 -->
@@ -148,10 +184,18 @@ onBeforeUnmount(() => {
   border: 1px solid #eee;
 }
 
+/* 新增连接状态和按钮容器样式 */
+.connect-status-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
 .status {
   color: #666;
   font-size: 0.9rem;
-  margin-bottom: 0.605rem; /* 在 0.55rem 基础上增大 10% */
+  margin-bottom: 0; /* 重置底部外边距 */
 }
 
 /* 用户名和服务器输入框容器样式 */
@@ -186,6 +230,7 @@ onBeforeUnmount(() => {
   flex-direction: column;
 }
 
+/* 新增连接服务器按钮样式 */
 .server-config button {
   align-self: flex-start;
   padding: 0.5rem 1rem;
