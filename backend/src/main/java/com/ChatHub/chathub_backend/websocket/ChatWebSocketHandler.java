@@ -1,5 +1,6 @@
 package com.ChatHub.chathub_backend.websocket;
 
+import com.ChatHub.chathub_backend.chat.ChatHistoryManager;
 import com.ChatHub.chathub_backend.message.BaseMessage;
 import com.ChatHub.chathub_backend.message.UserMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -42,12 +43,23 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     public void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
         //处理用户发来的json并使用objectMapper.readValue反序列化
         String jsonPayload = textMessage.getPayload();
-        BaseMessage message = objectMapper.readValue(jsonPayload, BaseMessage.class);
+        BaseMessage message = getMessage(session, textMessage);
         System.out.println("[" + System.currentTimeMillis() + "]收到" + session.getId() + "的发送: " + jsonPayload);
+        ChatHistoryManager  chatHistoryManager = new ChatHistoryManager();
+        chatHistoryManager.saveMessage(message);
 
         if(message.getType().equals(USER_MESSAGE)) {
             broadcastMessage(null, message);
         }
+    }
+    private BaseMessage getMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
+        // 处理用户发来的 JSON 并使用 objectMapper.readValue 反序列化
+        String jsonPayload = textMessage.getPayload();
+        BaseMessage message = objectMapper.readValue(jsonPayload, BaseMessage.class);
+        System.out.println("[" + System.currentTimeMillis() + "]收到" + session.getId() + "的发送: " + jsonPayload);
+        ChatHistoryManager chatHistoryManager = new ChatHistoryManager();
+        chatHistoryManager.saveMessage(message);
+        return message;
     }
 
     @Override

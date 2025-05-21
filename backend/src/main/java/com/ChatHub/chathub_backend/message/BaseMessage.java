@@ -3,6 +3,8 @@ package com.ChatHub.chathub_backend.message;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.time.LocalDateTime;
+
 //使用@JsonTypeInfo和@JsonSubTypes识别多态并自动创建对应对象
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
@@ -17,6 +19,8 @@ public class BaseMessage {
 
     private long timestamp;
 
+    private String time;
+
     public BaseMessage() {
         this.timestamp = System.currentTimeMillis();
     }
@@ -24,6 +28,7 @@ public class BaseMessage {
     public BaseMessage(String type) {
         this.type = type;
         this.timestamp = System.currentTimeMillis();
+        this.time = time;
     }
 
     public String getType() {
@@ -41,4 +46,12 @@ public class BaseMessage {
     public void setMessage(String message) {
         this.message = message;
     }
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
 }
