@@ -110,3 +110,4 @@ frontend/obj/rider.project.restore.info
 /frontend/bin
 /frontend/obj
 /frontend/bin
+backend/src/main/resources/chat_history.txt

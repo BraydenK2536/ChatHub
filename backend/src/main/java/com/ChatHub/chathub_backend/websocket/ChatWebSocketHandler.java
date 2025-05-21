@@ -1,28 +1,22 @@
 package com.ChatHub.chathub_backend.websocket;
 
-import com.ChatHub.chathub_backend.chat.ChatHistoryManager;
-import com.ChatHub.chathub_backend.message.BaseMessage;
-import com.ChatHub.chathub_backend.message.UserMessage;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.io.IOException;
-import java.net.http.WebSocket;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
+import com.ChatHub.chathub_backend.chat.ChatHistoryManager;
+import com.ChatHub.chathub_backend.message.BaseMessage;
 import static com.ChatHub.chathub_backend.message.UserMessage.USER_MESSAGE;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component// 将这个 Handler 注册为一个 Spring Bean
 public class ChatWebSocketHandler extends TextWebSocketHandler {
@@ -37,30 +31,45 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         //链接建立后，把当前用户加入sessions
         sessions.add(session);
-    }
 
-    @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
-        //处理用户发来的json并使用objectMapper.readValue反序列化
-        String jsonPayload = textMessage.getPayload();
-        BaseMessage message = getMessage(session, textMessage);
-        System.out.println("[" + System.currentTimeMillis() + "]收到" + session.getId() + "的发送: " + jsonPayload);
-        ChatHistoryManager  chatHistoryManager = new ChatHistoryManager();
-        chatHistoryManager.saveMessage(message);
+        ChatHistoryManager chatHistoryManager = new ChatHistoryManager();
+        List<BaseMessage> messages = chatHistoryManager.loadMessages();
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime fiveDaysAgo = now.minusDays(5);
 
-        if(message.getType().equals(USER_MESSAGE)) {
-            broadcastMessage(null, message);
+        for (BaseMessage message : messages) {
+            LocalDateTime messageTime = LocalDateTime.parse(message.getTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            if (messageTime.isAfter(fiveDaysAgo)) {
+                String jsonMessage = objectMapper.writeValueAsString(message);
+                session.sendMessage(new TextMessage(jsonMessage));
+            }
         }
     }
-    private BaseMessage getMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
-        // 处理用户发来的 JSON 并使用 objectMapper.readValue 反序列化
-        String jsonPayload = textMessage.getPayload();
-        BaseMessage message = objectMapper.readValue(jsonPayload, BaseMessage.class);
-        System.out.println("[" + System.currentTimeMillis() + "]收到" + session.getId() + "的发送: " + jsonPayload);
-        ChatHistoryManager chatHistoryManager = new ChatHistoryManager();
-        chatHistoryManager.saveMessage(message);
-        return message;
+
+@Override
+public void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
+    //处理用户发来的json并使用objectMapper.readValue反序列化
+    String jsonPayload = textMessage.getPayload();
+    BaseMessage message = objectMapper.readValue(jsonPayload, BaseMessage.class);
+    System.out.println("[" + System.currentTimeMillis() + "]收到" + session.getId() + "的发送: " + jsonPayload);
+    ChatHistoryManager  chatHistoryManager = new ChatHistoryManager();
+    chatHistoryManager.saveMessage(message);
+
+    if(message.getType().equals(USER_MESSAGE)) {
+        broadcastMessage(null, message);
     }
+}
+private BaseMessage getMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
+    // 处理用户发来的 JSON 并使用 objectMapper.readValue 反序列化
+    String jsonPayload = textMessage.getPayload();
+    BaseMessage message = objectMapper.readValue(jsonPayload, BaseMessage.class);
+    System.out.println("[" + System.currentTimeMillis() + "]收到" + session.getId() + "的发送: " + jsonPayload);
+    ChatHistoryManager chatHistoryManager = new ChatHistoryManager();
+    chatHistoryManager.saveMessage(message);
+    return message;
+}
+
+
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws IOException {
@@ -75,7 +84,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         System.out.println("WebSocket链接断开: " + session.getId() + "关闭状态:" + status.getCode());
-        broadcastMessage(session, new BaseMessage());
+        //broadcastMessage(session, new BaseMessage());
         sessions.remove(session);
     }
 
@@ -100,5 +109,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             }
         }
     }
+
+
 
 }

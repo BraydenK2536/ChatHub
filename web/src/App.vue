@@ -9,17 +9,17 @@ const connectionStatus = ref('未连接');
 const serverUrl = ref('ws://103.36.220.55:3003/chat'); // 默认地址
 const errorMessage = ref('');
 const username = ref(''); // 新增用户名变量
-let connectionInterval = null;
 const messagesRef = ref(null);
 
-// 格式化时间函数
+// 修改后的格式化时间函数，去掉秒数
 const formatTime = () => {
   const now = new Date();
+  const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, '0');
   const day = String(now.getDate()).padStart(2, '0');
   const hours = String(now.getHours()).padStart(2, '0');
   const minutes = String(now.getMinutes()).padStart(2, '0');
-  return `[${month}-${day} ${hours}:${minutes}]`;
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
 };
 
 // 滚动到聊天栏底部的函数
@@ -42,11 +42,6 @@ const connectWebSocket = () => {
 
     socket.value.onopen = () => {
       connectionStatus.value = '已连接';
-      // 连接成功后清除定时器
-      if (connectionInterval) {
-        clearInterval(connectionInterval);
-        connectionInterval = null;
-      }
     };
 
     socket.value.onmessage = (event) => {
@@ -55,7 +50,7 @@ const connectWebSocket = () => {
         messages.value.push({ 
           content: msgData.message, 
           isSelf: false, 
-          time: msgData.time || formatTime(),
+          time: msgData.time ? msgData.time.split(':').slice(0, 2).join(':') : formatTime(),
           name: msgData.name
         });
         scrollToBottom(); // 收到消息后滚动到聊天栏底部
@@ -78,10 +73,6 @@ const connectWebSocket = () => {
 
     socket.value.onclose = () => {
       connectionStatus.value = '连接已关闭';
-      // 连接关闭后重新启动定时器
-      if (!connectionInterval) {
-        connectionInterval = setInterval(connectWebSocket, 1000);
-      }
     };
   } catch (error) {
     errorMessage.value = `无效的WebSocket地址: ${error}`;
@@ -111,30 +102,24 @@ const sendMessage = () => {
   }
 };
 
-// 组件挂载时启动连接定时器
+// 组件挂载时移除连接定时器逻辑
 onMounted(() => {
-  connectionInterval = setInterval(connectWebSocket, 1000);
+  // 移除定时重连逻辑
 });
 
-// 组件卸载时清除定时器并关闭连接
+// 组件卸载时关闭连接
 onBeforeUnmount(() => {
-  if (connectionInterval) {
-    clearInterval(connectionInterval);
-  }
   if (socket.value) {
     socket.value.close();
   }
 });
 
-// 新增刷新连接函数
+// 刷新连接函数
 const refreshConnection = () => {
-  if (connectionInterval) {
-    clearInterval(connectionInterval);
-  }
   if (socket.value) {
     socket.value.close();
   }
-  connectionInterval = setInterval(connectWebSocket, 1000);
+  connectWebSocket();
 };
 </script>
 
