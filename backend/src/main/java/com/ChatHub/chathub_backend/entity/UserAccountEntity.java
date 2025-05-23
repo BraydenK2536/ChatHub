@@ -2,6 +2,8 @@ package com.ChatHub.chathub_backend.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "user_account") // 指定映射到数据库中的表名
 public class UserAccountEntity {
@@ -16,10 +18,20 @@ public class UserAccountEntity {
     @Column(nullable = false, length = 20)
     private String password; // 用户名
 
+    @Column
+    private LocalDateTime registerTime;
+
+    public UserAccountEntity( String username,String password) {
+        this.username = username;
+        this.password = password;
+        this.registerTime = LocalDateTime.now();
+    }
+
     public UserAccountEntity() {
     }
 
     public UserAccountEntity(Long id, String username, String password) {
+        this.registerTime = LocalDateTime.now();
         this.id = id;
         this.username = username;
         this.password = password;
@@ -52,6 +64,14 @@ public class UserAccountEntity {
 
     public String getPassword() {
         return password;
+    }
+
+    public LocalDateTime getRegisterTime() {
+        return registerTime;
+    }
+
+    public void setRegisterTime(LocalDateTime registerTime) {
+        this.registerTime = registerTime;
     }
 
     public void setPassword(String password) {
