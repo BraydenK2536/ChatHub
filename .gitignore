@@ -111,3 +111,4 @@ frontend/obj/rider.project.restore.info
 /frontend/obj
 /frontend/bin
 backend/src/main/resources/chat_history.txt
+backend/src/main/resources/application.properties
