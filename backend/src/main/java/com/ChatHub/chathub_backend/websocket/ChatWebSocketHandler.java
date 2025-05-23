@@ -6,6 +6,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.ChatHub.chathub_backend.repository.UserAccountRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -15,8 +19,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import com.ChatHub.chathub_backend.chat.ChatHistoryManager;
 import com.ChatHub.chathub_backend.message.BaseMessage;
 import static com.ChatHub.chathub_backend.message.UserMessage.USER_MESSAGE;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @Component// 将这个 Handler 注册为一个 Spring Bean
 public class ChatWebSocketHandler extends TextWebSocketHandler {
@@ -25,7 +28,14 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    private final UserAccountRepository userAccountRepository;
+
     private String username;
+
+    @Autowired
+    public ChatWebSocketHandler(UserAccountRepository userAccountRepository) {
+        this.userAccountRepository = userAccountRepository;
+    }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {

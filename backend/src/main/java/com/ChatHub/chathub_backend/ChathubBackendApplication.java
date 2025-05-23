@@ -11,6 +11,8 @@ public class ChathubBackendApplication {
 
     public static void main(String[] args) {
 		SpringApplication.run(ChathubBackendApplication.class, args);
+
+
 	}
 
 }
