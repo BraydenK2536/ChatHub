@@ -3,6 +3,9 @@ package com.ChatHub.chathub_backend.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 @Entity
 @Table(name = "user_account") // 指定映射到数据库中的表名
@@ -19,19 +22,19 @@ public class UserAccountEntity {
     private String password; // 用户名
 
     @Column
-    private LocalDateTime registerTime;
+    private ZonedDateTime registerTime;
 
     public UserAccountEntity( String username,String password) {
         this.username = username;
         this.password = password;
-        this.registerTime = LocalDateTime.now();
+        this.registerTime = ZonedDateTime.now(ZoneId.systemDefault());
     }
 
     public UserAccountEntity() {
     }
 
     public UserAccountEntity(Long id, String username, String password) {
-        this.registerTime = LocalDateTime.now();
+        this.registerTime = ZonedDateTime.now(ZoneOffset.UTC);
         this.id = id;
         this.username = username;
         this.password = password;
@@ -66,11 +69,11 @@ public class UserAccountEntity {
         return password;
     }
 
-    public LocalDateTime getRegisterTime() {
+    public ZonedDateTime getRegisterTime() {
         return registerTime;
     }
 
-    public void setRegisterTime(LocalDateTime registerTime) {
+    public void setRegisterTime(ZonedDateTime registerTime) {
         this.registerTime = registerTime;
     }
 

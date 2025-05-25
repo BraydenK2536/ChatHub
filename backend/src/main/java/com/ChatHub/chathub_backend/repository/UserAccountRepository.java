@@ -10,7 +10,6 @@ import java.util.List;
 
 @Repository
 public interface UserAccountRepository extends JpaRepository<UserAccountEntity,Long> {
-
-
+    //用户信息数据库的接口
     UserAccountEntity findByUsername(String username);
 }

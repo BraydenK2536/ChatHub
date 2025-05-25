@@ -48,7 +48,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         LocalDateTime fiveDaysAgo = now.minusDays(5);
 
         for (BaseMessage message : messages) {
-            LocalDateTime messageTime = LocalDateTime.parse(message.getTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            LocalDateTime messageTime = LocalDateTime.parse(message.getTime());
             if (messageTime.isAfter(fiveDaysAgo)) {
                 String jsonMessage = objectMapper.writeValueAsString(message);
                 session.sendMessage(new TextMessage(jsonMessage));
