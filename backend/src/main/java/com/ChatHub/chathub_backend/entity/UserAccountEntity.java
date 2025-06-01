@@ -22,19 +22,19 @@ public class UserAccountEntity {
     private String password; // 用户名
 
     @Column
-    private ZonedDateTime registerTime;
+    private LocalDateTime registerTime;
 
     public UserAccountEntity( String username,String password) {
         this.username = username;
         this.password = password;
-        this.registerTime = ZonedDateTime.now(ZoneId.systemDefault());
+        this.registerTime = LocalDateTime.now();
     }
 
     public UserAccountEntity() {
     }
 
     public UserAccountEntity(Long id, String username, String password) {
-        this.registerTime = ZonedDateTime.now(ZoneOffset.UTC);
+        this.registerTime = LocalDateTime.now();
         this.id = id;
         this.username = username;
         this.password = password;
@@ -53,10 +53,6 @@ public class UserAccountEntity {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -69,11 +65,11 @@ public class UserAccountEntity {
         return password;
     }
 
-    public ZonedDateTime getRegisterTime() {
+    public LocalDateTime getRegisterTime() {
         return registerTime;
     }
 
-    public void setRegisterTime(ZonedDateTime registerTime) {
+    public void setRegisterTime(LocalDateTime registerTime) {
         this.registerTime = registerTime;
     }
 

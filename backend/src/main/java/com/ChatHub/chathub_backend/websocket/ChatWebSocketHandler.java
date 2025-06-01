@@ -6,7 +6,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.ChatHub.chathub_backend.entity.ChatHistoryEntity;
+import com.ChatHub.chathub_backend.message.UserMessage;
+import com.ChatHub.chathub_backend.repository.ChatHistoryRepository;
 import com.ChatHub.chathub_backend.repository.UserAccountRepository;
+import com.ChatHub.chathub_backend.service.ChatHistoryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +20,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import com.ChatHub.chathub_backend.chat.ChatHistoryManager;
 import com.ChatHub.chathub_backend.message.BaseMessage;
 import static com.ChatHub.chathub_backend.message.UserMessage.USER_MESSAGE;
 
@@ -26,33 +29,28 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     private final UserAccountRepository userAccountRepository;
+
+    private final ChatHistoryService chatHistoryService;
 
     private String username;
 
     @Autowired
-    public ChatWebSocketHandler(UserAccountRepository userAccountRepository) {
+    public ChatWebSocketHandler(UserAccountRepository userAccountRepository, ChatHistoryService chatHistoryService, ObjectMapper objectMapper) {
         this.userAccountRepository = userAccountRepository;
+        this.chatHistoryService = chatHistoryService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         //链接建立后，把当前用户加入sessions
         sessions.add(session);
-
-        ChatHistoryManager chatHistoryManager = new ChatHistoryManager();
-        List<BaseMessage> messages = chatHistoryManager.loadMessages();
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime fiveDaysAgo = now.minusDays(5);
-
-        for (BaseMessage message : messages) {
-            LocalDateTime messageTime = LocalDateTime.parse(message.getTime());
-            if (messageTime.isAfter(fiveDaysAgo)) {
-                String jsonMessage = objectMapper.writeValueAsString(message);
-                session.sendMessage(new TextMessage(jsonMessage));
-            }
+        //加载5天以内的历史消息
+        for (ChatHistoryEntity messages : chatHistoryService.getMessagesFrom5Days()) {
+            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(new UserMessage(messages))));
         }
     }
 
@@ -62,24 +60,14 @@ public void handleTextMessage(WebSocketSession session, TextMessage textMessage)
     String jsonPayload = textMessage.getPayload();
     BaseMessage message = objectMapper.readValue(jsonPayload, BaseMessage.class);
     System.out.println("[" + System.currentTimeMillis() + "]收到" + session.getId() + "的发送: " + jsonPayload);
-    ChatHistoryManager  chatHistoryManager = new ChatHistoryManager();
-    chatHistoryManager.saveMessage(message);
 
-    if(message.getType().equals(USER_MESSAGE)) {
+    //保存并广播用户消息
+    if (message instanceof UserMessage) {
+        chatHistoryService.save(new ChatHistoryEntity((UserMessage) message));
         broadcastMessage(null, message);
     }
-}
-private BaseMessage getMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
-    // 处理用户发来的 JSON 并使用 objectMapper.readValue 反序列化
-    String jsonPayload = textMessage.getPayload();
-    BaseMessage message = objectMapper.readValue(jsonPayload, BaseMessage.class);
-    System.out.println("[" + System.currentTimeMillis() + "]收到" + session.getId() + "的发送: " + jsonPayload);
-    ChatHistoryManager chatHistoryManager = new ChatHistoryManager();
-    chatHistoryManager.saveMessage(message);
-    return message;
-}
 
-
+}
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws IOException {

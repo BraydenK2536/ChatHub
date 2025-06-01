@@ -21,20 +21,20 @@ public class BaseMessage {
 
     private String message;
 
-    private String time;
+    private LocalDateTime time;
 
     public BaseMessage() {
-        this.time = formatTime(LocalDateTime.now());
+        this.time = LocalDateTime.now();
     }
 
     public BaseMessage(String type) {
         this.type = type;
-        this.time = formatTime(LocalDateTime.now());
+        this.time = LocalDateTime.now();
     }
 
     public BaseMessage(String type, String message) {
         this.type = type;
-        this.time = formatTime(LocalDateTime.now());
+        this.time = LocalDateTime.now();
         this.message = message;
     }
 
@@ -55,12 +55,12 @@ public class BaseMessage {
         this.message = message;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public LocalDateTime getTime() {
+        return time;
     }
 
-    public String getTime() {
-        return time;
+    public void setTime(LocalDateTime time) {
+        this.time = time;
     }
 
     private String formatTime(LocalDateTime time) {
