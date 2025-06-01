@@ -41,7 +41,9 @@ public class ServerBroadcast {
                             System.out.println("输入次数");
                             int times = scanner.nextInt();
                             for (int i = 0; i < times; i++) {
-                                chatWebSocketHandler.broadcastMessage(null,new SystemMessage(message,"SYSTEM"));
+                                if (chatWebSocketHandler != null) {
+                                    chatWebSocketHandler.broadcastMessage(null,new SystemMessage(message,"SYSTEM"));
+                                }
                             }
                         }
 

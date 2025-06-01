@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@Service
+//@Service
 public class RepositoryTest {
     private final UserAccountRepository userAccountRepository;
 
-    @Autowired
+//    @Autowired
     public RepositoryTest(UserAccountRepository userAccountRepository) {
         this.userAccountRepository = userAccountRepository;
     }
@@ -26,5 +26,6 @@ public class RepositoryTest {
     public void findUserByIdAndPrint(Long userId) {
         Optional<UserAccountEntity> user = userAccountRepository.findById(userId);
         user.ifPresent(System.out::println);
+
     }
 }

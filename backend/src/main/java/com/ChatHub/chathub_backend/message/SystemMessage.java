@@ -9,6 +9,10 @@ public class SystemMessage extends BaseMessage {
         super(SYSTEM_MESSAGE);
     }
 
+    public SystemMessage(String message) {
+        super(SYSTEM_MESSAGE,message);
+    }
+
     public String getName() {
         return name;
     }
