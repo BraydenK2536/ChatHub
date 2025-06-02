@@ -41,7 +41,7 @@ const router = useRouter();
 const username = ref('');
 const password = ref('');
 // 新增服务器地址变量
-const serverUrl = ref('ws://1.14.191.95:7833/chat'); 
+const serverUrl = ref('ws://47.109.103.88:7833/chat'); 
 
 const login = () => {
   // 这里添加登录逻辑

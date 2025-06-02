@@ -36,7 +36,7 @@ const socket = ref(null);
 const messages = ref([]);
 const messageInput = ref('');
 const connectionStatus = ref('未连接');
-const serverUrl = ref(route.query.serverUrl || 'ws://1.14.191.95:7833/chat'); 
+const serverUrl = ref(route.query.serverUrl || 'ws://47.109.103.88:7833/chat'); 
 const errorMessage = ref('');
 const messagesRef = ref(null);
 
