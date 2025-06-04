@@ -35,15 +35,20 @@ const register = async () => {
     });
 
     if (!response.ok) {
-      throw new Error(`注册失败: ${response.statusText}`);
+      throw new Error(`注册失败: ${response.statusText}（状态码：${response.status}）`);
     }
 
     const data = await response.json();
     console.log('注册成功:', data);
     router.push('/chat');
   } catch (error) {
+    // 关键修改：区分网络错误和接口错误
+    if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+      errorMessage.value = '无法连接到服务器，请检查网络或服务器地址是否正确';
+    } else {
+      errorMessage.value = error.message;
+    }
     console.error('注册出错:', error);
-    errorMessage.value = error.message;
   }
 };
 

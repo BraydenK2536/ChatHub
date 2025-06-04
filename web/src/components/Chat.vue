@@ -89,7 +89,8 @@ const connectWebSocket = () => {
         messages.value.push({ 
           content: msgData.message, 
           isSelf: false, 
-          time: msgData.time ? msgData.time.split(':').slice(0, 2).join(':') : formatTime(),
+          // 关键修改：替换 T 后，按冒号分割取前两部分（小时和分钟）
+          time: msgData.time ? msgData.time.replace('T', ' ').split(':').slice(0, 2).join(':') : formatTime(),
           name: msgData.name
         });
         scrollToBottom();
