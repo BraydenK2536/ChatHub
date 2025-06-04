@@ -14,7 +14,9 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // 配置允许的源 (前端的地址)
+        config.addAllowedOrigin("http://47.109.103.88:7834");
         config.addAllowedOrigin("http://47.109.103.88:7833");
+        config.addAllowedOrigin("http://192.168.137.1:7834");
         config.addAllowedOrigin("http://192.168.137.1:7833");
 
         // 3. 是否允许发送 Cookie 等凭证信息
