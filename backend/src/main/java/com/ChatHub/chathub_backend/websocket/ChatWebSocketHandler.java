@@ -64,7 +64,7 @@ public void handleTextMessage(WebSocketSession session, TextMessage textMessage)
     //保存并广播用户消息
     if (message instanceof UserMessage) {
         chatHistoryService.save(new ChatHistoryEntity((UserMessage) message));
-        broadcastMessage(null, message);
+        broadcastMessage(session, message);
     }
 
 }

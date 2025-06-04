@@ -34,7 +34,7 @@ public class AuthController {
             Optional<UserAccountEntity> loginUser = userAccountService.login(loginRequest);
             if (loginUser.isPresent()) {
                 UserAccountEntity userAccountEntity = loginUser.get();
-                return ResponseEntity.ok(new SystemMessage(userAccountEntity.getUsername(), "登录成功"));
+                return ResponseEntity.ok(new SystemMessage("登录成功",userAccountEntity.getUsername()));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new SystemMessage("用户名或密码错误！"));
             }
@@ -49,7 +49,7 @@ public class AuthController {
             Optional<UserAccountEntity> registerUser = userAccountService.register(registerRequest);
             if (registerUser.isPresent()) {
                 UserAccountEntity userAccountEntity = registerUser.get();
-                return ResponseEntity.ok(new SystemMessage(userAccountEntity.getUsername(), "注册成功"));
+                return ResponseEntity.ok(new SystemMessage("注册成功",userAccountEntity.getUsername()));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new SystemMessage("用户名已经被注册！"));
             }
