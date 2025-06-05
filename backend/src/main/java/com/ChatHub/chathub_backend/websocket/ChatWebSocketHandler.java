@@ -6,11 +6,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import ch.qos.logback.core.util.TimeUtil;
 import com.ChatHub.chathub_backend.entity.ChatHistoryEntity;
 import com.ChatHub.chathub_backend.message.UserMessage;
 import com.ChatHub.chathub_backend.repository.ChatHistoryRepository;
 import com.ChatHub.chathub_backend.repository.UserAccountRepository;
 import com.ChatHub.chathub_backend.service.ChatHistoryService;
+import com.ChatHub.chathub_backend.util.timeUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.ChatHub.chathub_backend.message.BaseMessage;
+
 import static com.ChatHub.chathub_backend.message.UserMessage.USER_MESSAGE;
 
 
@@ -54,25 +57,25 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-@Override
-public void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
-    //处理用户发来的json并使用objectMapper.readValue反序列化
-    String jsonPayload = textMessage.getPayload();
-    BaseMessage message = objectMapper.readValue(jsonPayload, BaseMessage.class);
-    System.out.println("[" + System.currentTimeMillis() + "]收到" + session.getId() + "的发送: " + jsonPayload);
+    @Override
+    public void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
+        //处理用户发来的json并使用objectMapper.readValue反序列化
+        String jsonPayload = textMessage.getPayload();
+        BaseMessage message = objectMapper.readValue(jsonPayload, BaseMessage.class);
+        System.out.println(timeUtil.getTime() + "收到" + session.getId() + "的发送: " + jsonPayload);
 
-    //保存并广播用户消息
-    if (message instanceof UserMessage) {
-        chatHistoryService.save(new ChatHistoryEntity((UserMessage) message));
-        broadcastMessage(session, message);
+        //保存并广播用户消息
+        if (message instanceof UserMessage) {
+            chatHistoryService.save(new ChatHistoryEntity((UserMessage) message));
+            broadcastMessage(session, message);
+        }
+
     }
-
-}
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws IOException {
-        //如果出错，则把当前用户从在线列表中移除
-        System.err.println(session.getId() + "发生错误，已终止会话。");
+        System.err.println(timeUtil.getTime() + session.getId() + "发生错误，已终止会话。");
+        exception.printStackTrace(); //打印详细的错误堆栈
         if (session.isOpen()) {
             session.close(CloseStatus.SERVER_ERROR);
         }
@@ -81,13 +84,13 @@ public void handleTextMessage(WebSocketSession session, TextMessage textMessage)
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        System.out.println("WebSocket链接断开: " + session.getId() + "关闭状态:" + status.getCode());
+        System.out.println(timeUtil.getTime() + "WebSocket链接断开: " + session.getId() + "关闭状态:" + status.getCode());
         //broadcastMessage(session, new BaseMessage());
         sessions.remove(session);
     }
 
     public void broadcastMessage(WebSocketSession blackListSession, BaseMessage baseMessage) throws JsonProcessingException {
-        String jsonMessage =  objectMapper.writeValueAsString(baseMessage);
+        String jsonMessage = objectMapper.writeValueAsString(baseMessage);
         TextMessage textMessage = new TextMessage(jsonMessage);
         //遍历sessions发送消息
         for (WebSocketSession wss : sessions) {
@@ -97,7 +100,7 @@ public void handleTextMessage(WebSocketSession session, TextMessage textMessage)
                     wss.sendMessage(textMessage);
                 } catch (IOException e) {
                     //出现错误时，输出错误信息并试图关闭错误WebSocketSession
-                    System.err.println("广播时出现错误,sessions ID: " + wss.getId() + ": " + e.getMessage());
+                    System.err.println(timeUtil.getTime() + "广播时出现错误,sessions ID: " + wss.getId() + ": " + e.getMessage());
                     try {
                         wss.close();
                     } catch (IOException ex) {
@@ -107,7 +110,6 @@ public void handleTextMessage(WebSocketSession session, TextMessage textMessage)
             }
         }
     }
-
 
 
 }

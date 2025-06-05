@@ -18,6 +18,8 @@ public class CorsConfig {
         config.addAllowedOrigin("http://47.109.103.88:7833");
         config.addAllowedOrigin("http://192.168.137.1:7834");
         config.addAllowedOrigin("http://192.168.137.1:7833");
+        config.addAllowedOrigin("http://localhost:7833");
+        config.addAllowedOrigin("http://localhost:7834");
 
         // 3. 是否允许发送 Cookie 等凭证信息
         config.setAllowCredentials(true);
