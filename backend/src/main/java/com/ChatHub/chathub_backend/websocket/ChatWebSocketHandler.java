@@ -71,8 +71,8 @@ public void handleTextMessage(WebSocketSession session, TextMessage textMessage)
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws IOException {
-        //如果出错，则把当前用户从在线列表中移除
         System.err.println(session.getId() + "发生错误，已终止会话。");
+        exception.printStackTrace(); //打印详细的错误堆栈
         if (session.isOpen()) {
             session.close(CloseStatus.SERVER_ERROR);
         }

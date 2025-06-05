@@ -23,7 +23,7 @@ const errorMessage = ref('');
 
 const register = async () => {
   try {
-    const response = await fetch('http://47.109.103.88:7833/api/auth/register', { 
+    const response = await fetch('http://47.109.103.88:7833/api/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -40,14 +40,16 @@ const register = async () => {
 
     const data = await response.json();
     console.log('注册成功:', data);
-    router.push('/chat');
+    // 关键修改：跳转时传递用户名和服务器地址（假设服务器地址固定，或从注册接口获取）
+    router.push({
+      name: 'Chat',
+      query: {
+        username: username.value,  // 传递注册时的用户名
+        serverUrl: 'http://47.109.103.88:7833/chat'  // 服务器地址（根据实际情况调整）
+      }
+    });
   } catch (error) {
-    // 关键修改：区分网络错误和接口错误
-    if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
-      errorMessage.value = '无法连接到服务器，请检查网络或服务器地址是否正确';
-    } else {
-      errorMessage.value = error.message;
-    }
+    errorMessage.value = error.message;
     console.error('注册出错:', error);
   }
 };

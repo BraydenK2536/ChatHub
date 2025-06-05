@@ -22,11 +22,11 @@
       <!-- 服务器独立框 -->
       <div class="server-box">
         <label for="serverUrl">服务器</label>
-        <input 
-          id="serverUrl"
-          v-model="serverUrl"
-          placeholder="ws://服务器地址"
-          class="server-input"
+        <input
+            id="serverUrl"
+            v-model="serverUrl"
+            placeholder="ws://服务器地址"
+            class="server-input"
         />
       </div>
     </div>
@@ -41,15 +41,40 @@ const router = useRouter();
 const username = ref('');
 const password = ref('');
 // 新增服务器地址变量
-const serverUrl = ref('ws://47.109.103.88:7833/chat'); 
+const serverUrl = ref('ws://47.109.103.88:7833/chat');
+const errorMessage = ref(''); // 新增错误提示变量
 
-const login = () => {
-  // 这里添加登录逻辑
-  // 将服务器地址传递到聊天界面
-  router.push({ 
-    name: 'Chat', 
-    query: { serverUrl: serverUrl.value } 
-  });
+const login = async () => {
+  try {
+    const response = await fetch('http://47.109.103.88:7833/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: username.value,
+        password: password.value,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`登录失败: ${response.statusText}（状态码：${response.status}）`);
+    }
+
+    const data = await response.json();
+    console.log('登录成功:', data);
+    // 关键修改：跳转时传递用户名和服务器地址
+    router.push({
+      name: 'Chat',
+      query: {
+        username: username.value,  // 传递登录时的用户名
+        serverUrl: serverUrl.value  // 从输入框获取的服务器地址
+      }
+    });
+  } catch (error) {
+    errorMessage.value = error.message;
+    console.error('登录出错:', error);
+  }
 };
 
 const goToRegister = () => {
@@ -60,13 +85,13 @@ const goToRegister = () => {
 <style scoped>
 .login-container {
   max-width: 800px;
-  margin: 0 auto; 
+  margin: 0 auto;
   padding: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: center; 
-  align-items: center; 
-  min-height: 100vh; 
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 /* 标题容器样式 */
@@ -86,13 +111,13 @@ const goToRegister = () => {
   display: flex;
   gap: 30px;
   width: 100%;
-  justify-content: center; 
+  justify-content: center;
 }
 
 /* 账号密码+按钮框（调整内部元素居中） */
 .auth-box {
   max-width: 300px;
-  flex: 1; 
+  flex: 1;
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 20px;
@@ -139,7 +164,7 @@ button {
 /* 服务器独立框（保持原有样式） */
 .server-box {
   max-width: 300px;
-  flex: 0.7; 
+  flex: 0.7;
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 20px;
