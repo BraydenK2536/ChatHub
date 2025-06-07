@@ -35,10 +35,12 @@ const register = async () => {
     });
 
     if (!response.ok) {
+      alert(`注册失败: ${response.statusText}`)
       throw new Error(`注册失败: ${response.statusText}（状态码：${response.status}）`);
     }
 
     const data = await response.json();
+    alert('注册成功');
     console.log('注册成功:', data);
     // 关键修改：跳转时传递用户名和服务器地址（假设服务器地址固定，或从注册接口获取）
     router.push({
