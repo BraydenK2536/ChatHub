@@ -10,8 +10,8 @@
       <!-- 账号密码+按钮框 -->
       <div class="auth-box">
         <div class="auth-section">
-          <input v-model="username" placeholder="用户名" />
-          <input v-model="password" type="password" placeholder="密码" />
+          <input v-model="username" placeholder="用户名"/>
+          <input v-model="password" type="password" placeholder="密码"/>
         </div>
         <!-- 使用 div 容器包裹登录按钮和注册提示 -->
         <div class="login-register-container">
@@ -22,11 +22,11 @@
       <!-- 服务器独立框 -->
       <div class="server-box">
         <label for="serverUrl">服务器</label>
-        <input 
-          id="serverUrl"
-          v-model="serverUrl"
-          placeholder="ws://服务器地址"
-          class="server-input"
+        <input
+            id="serverUrl"
+            v-model="serverUrl"
+            placeholder="ws://服务器地址"
+            class="server-input"
         />
       </div>
     </div>
@@ -34,22 +34,41 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import {ref} from 'vue';
+import {useRouter} from 'vue-router';
+import axios from 'axios';
 
 const router = useRouter();
 const username = ref('');
 const password = ref('');
 // 新增服务器地址变量
-const serverUrl = ref('ws://1.14.191.95:7833/chat'); 
+const serverUrl = ref('ws://103.36.220.55:3003/chat');
+const errorMessage = ref(''); // 新增错误提示变量
 
-const login = () => {
-  // 这里添加登录逻辑
-  // 将服务器地址传递到聊天界面
-  router.push({ 
-    name: 'Chat', 
-    query: { serverUrl: serverUrl.value } 
-  });
+const login = async () => {
+    axios.post('http://103.36.220.55:3003/api/auth/login', {
+      username: username.value,
+      password: password.value,
+    }).then(response => {
+      console.log(response.data)
+
+      if (response.status !== 200) {
+        throw new Error(`登录失败: ${response.statusText}（状态码：${response.status}）`);
+      }else{
+        alert('登录成功');
+        console.log('登录成功:', response.data);
+
+        sessionStorage.setItem('username', username.value);
+        sessionStorage.setItem('serverUrl', serverUrl.value);
+        router.push({ name: 'Chat' });
+
+      }
+
+    }).catch(error => {
+      alert(`登录失败: ${error.response.data.message}`);
+      console.log(`登录失败: ${error.response.data.message}`);
+    })
+
 };
 
 const goToRegister = () => {
@@ -60,13 +79,13 @@ const goToRegister = () => {
 <style scoped>
 .login-container {
   max-width: 800px;
-  margin: 0 auto; 
+  margin: 0 auto;
   padding: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: center; 
-  align-items: center; 
-  min-height: 100vh; 
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 /* 标题容器样式 */
@@ -86,13 +105,13 @@ const goToRegister = () => {
   display: flex;
   gap: 30px;
   width: 100%;
-  justify-content: center; 
+  justify-content: center;
 }
 
 /* 账号密码+按钮框（调整内部元素居中） */
 .auth-box {
   max-width: 300px;
-  flex: 1; 
+  flex: 1;
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 20px;
@@ -139,7 +158,7 @@ button {
 /* 服务器独立框（保持原有样式） */
 .server-box {
   max-width: 300px;
-  flex: 0.7; 
+  flex: 0.7;
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 20px;
