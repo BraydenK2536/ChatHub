@@ -64,13 +64,11 @@ const login = async () => {
     const data = await response.json();
     console.log('登录成功:', data);
     // 关键修改：跳转时传递用户名和服务器地址
-    router.push({
-      name: 'Chat',
-      query: {
-        username: username.value,  // 传递登录时的用户名
-        serverUrl: serverUrl.value  // 从输入框获取的服务器地址
-      }
-    });
+
+    sessionStorage.setItem('username', username.value);
+    sessionStorage.setItem('serverUrl', serverUrl.value);
+    router.push({ name: 'Chat' });
+
   } catch (error) {
     errorMessage.value = error.message;
     console.error('登录出错:', error);
