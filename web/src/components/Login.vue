@@ -41,12 +41,12 @@ const router = useRouter();
 const username = ref('');
 const password = ref('');
 // 新增服务器地址变量
-const serverUrl = ref('ws://47.109.103.88:7833/chat');
+const serverUrl = ref('ws://103.36.220.55:3003/chat');
 const errorMessage = ref(''); // 新增错误提示变量
 
 const login = async () => {
   try {
-    const response = await fetch('http://47.109.103.88:7833/api/auth/login', {
+    const response = await fetch('http://103.36.220.55:3003/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

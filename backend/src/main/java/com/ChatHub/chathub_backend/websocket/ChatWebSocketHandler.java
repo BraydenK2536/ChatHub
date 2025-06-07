@@ -73,7 +73,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception) throws IOException {
+    public void handleTransportError(WebSocketSession session, Throwable exception) throws IOException {//
         System.err.println(session.getId() + "发生错误，已终止会话。");
         System.err.println(timeUtil.getTime() + session.getId() + "发生错误，已终止会话。");
         exception.printStackTrace(); //打印详细的错误堆栈

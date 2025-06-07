@@ -66,28 +66,13 @@ const scrollToBottom = () => {
   });
 };
 
-// 新增重连间隔时间（毫秒）
-const RECONNECT_INTERVAL = 500;
-// 新增重连定时器引用
-let reconnectTimer = null;
-
-// 清除重连定时器
-const clearReconnectTimer = () => {
-  if (reconnectTimer) {
-    clearTimeout(reconnectTimer);
-    reconnectTimer = null;
-  }
-};
-
 // WebSocket 连接逻辑
 const connectWebSocket = () => {
   if (socket.value?.readyState === WebSocket.OPEN) return;
-  clearReconnectTimer();
   try {
     socket.value = new WebSocket(serverUrl.value);
     socket.value.onopen = () => {
       connectionStatus.value = '已连接';
-      clearReconnectTimer();
     };
     socket.value.onmessage = (event) => {
       try {
@@ -101,7 +86,6 @@ const connectWebSocket = () => {
         scrollToBottom();
       } catch (parseError) {
         console.error('解析接收到的消息失败:', parseError);
-        // 关键修复：使用三元表达式替代 if 语句
         messages.value.push({
           content: event.data,
           isSelf: false,
@@ -114,30 +98,19 @@ const connectWebSocket = () => {
     socket.value.onerror = (error) => {
       console.error('WebSocket错误:', error);
       connectionStatus.value = '连接错误';
-      // 启动重连定时器
-      reconnectTimer = setTimeout(connectWebSocket, RECONNECT_INTERVAL);
     };
     socket.value.onclose = () => {
       connectionStatus.value = '连接已关闭';
-      // 启动重连定时器
-      reconnectTimer = setTimeout(connectWebSocket, RECONNECT_INTERVAL);
     };
   } catch (error) {
     errorMessage.value = `无效的WebSocket地址: ${error}`;
     connectionStatus.value = '连接失败';
-    // 启动重连定时器
-    reconnectTimer = setTimeout(connectWebSocket, RECONNECT_INTERVAL);
   }
 };
 
 // 生命周期钩子
-onMounted(() => {
-  connectWebSocket();
-});
-
 onBeforeUnmount(() => {
   if (socket.value) socket.value.close();
-  clearReconnectTimer();
 });
 
 // 发送消息逻辑
@@ -200,10 +173,8 @@ const refreshConnection = () => {
 }
 
 .message {
-  padding: 0.27rem;
-  padding-left: 0.6rem;
-  padding-right: 0.6rem;
-  margin: 0.5rem 0;
+  padding: 0.3025rem;
+  margin: 0.3025rem 0;
   background: #f5f5f5;
   border-radius: 8px; /* 原4px → 增大为8px */
   max-width: 70%;
