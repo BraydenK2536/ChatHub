@@ -10,8 +10,8 @@
       <!-- 账号密码+按钮框 -->
       <div class="auth-box">
         <div class="auth-section">
-          <input v-model="username" placeholder="用户名" />
-          <input v-model="password" type="password" placeholder="密码" />
+          <input v-model="username" placeholder="用户名"/>
+          <input v-model="password" type="password" placeholder="密码"/>
         </div>
         <!-- 使用 div 容器包裹登录按钮和注册提示 -->
         <div class="login-register-container">
@@ -34,8 +34,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import {ref} from 'vue';
+import {useRouter} from 'vue-router';
+import axios from 'axios';
 
 const router = useRouter();
 const username = ref('');
@@ -45,36 +46,29 @@ const serverUrl = ref('ws://103.36.220.55:3003/chat');
 const errorMessage = ref(''); // 新增错误提示变量
 
 const login = async () => {
-  try {
-    const response = await fetch('http://103.36.220.55:3003/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: username.value,
-        password: password.value,
-      }),
-    });
+    axios.post('http://103.36.220.55:3003/api/auth/login', {
+      username: username.value,
+      password: password.value,
+    }).then(response => {
+      console.log(response.data)
 
-    if (!response.ok) {
-      throw new Error(`登录失败: ${response.statusText}（状态码：${response.status}）`);
-    }
+      if (response.status !== 200) {
+        throw new Error(`登录失败: ${response.statusText}（状态码：${response.status}）`);
+      }else{
+        alert('登录成功');
+        console.log('登录成功:', response.data);
 
-    const data = await response.json();
-    console.log('登录成功:', data);
-    // 关键修改：跳转时传递用户名和服务器地址
-    router.push({
-      name: 'Chat',
-      query: {
-        username: username.value,  // 传递登录时的用户名
-        serverUrl: serverUrl.value  // 从输入框获取的服务器地址
+        sessionStorage.setItem('username', username.value);
+        sessionStorage.setItem('serverUrl', serverUrl.value);
+        router.push({ name: 'Chat' });
+
       }
-    });
-  } catch (error) {
-    errorMessage.value = error.message;
-    console.error('登录出错:', error);
-  }
+
+    }).catch(error => {
+      alert(`登录失败: ${error.response.data.message}`);
+      console.log(`登录失败: ${error.response.data.message}`);
+    })
+
 };
 
 const goToRegister = () => {
